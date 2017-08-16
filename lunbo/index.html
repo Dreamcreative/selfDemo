@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>图片轮播</title>
+		<style>
+			*{padding: 0px;margin:0px;}
+			li{list-style: none;}
+			#box{width: 715px;height: 530px;margin:0 auto;box-shadow:2px 3px 5px;position: relative;}
+			#bigImg li{width: 715px;height: 530px;position: absolute;}
+			#bigImg img{width: 715px;height: 530px;}
+			#smallImg{width: 125px;height: 25px;position: absolute;left: 50%;bottom: 5px;margin-left: -62px;z-index: 100;}
+			#smallImg li{width: 20px;height: 20px;background: #fff;border-radius:50%;float: left;margin-left: 10px;cursor:pointer;}
+			#box span{width: 50px;height: 60px;display: block;position: absolute;top: 50%;margin-top: -15px;background:rgba(255,255,255,0.5);line-height: 60px; text-align: center;font-size: 50px;cursor: pointer;z-index: 100;color: #fff;}
+			#left{left: 0px;}
+			#right{right: 0px}
+			#bigImg li.active{z-index: 1;}
+			#smallImg li.active{background: #f60;}
+		</style>
+		
+	</head>
+	<body>
+		<div id="box">
+			<ul id="bigImg">
+				<li class="active">
+					<img src="img/1.jpg" />
+				</li>
+				<li>
+					<img src="img/2.jpg" />
+				</li>
+				<li>
+					<img src="img/3.jpg" />
+				</li>
+				<li>
+					<img src="img/4.jpg" />
+				</li>
+			</ul>
+			<ol id="smallImg">
+				<li class="active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ol>
+			<span id="left">&lt;</span>
+			<span id="right">&gt;</span>
+		</div>
+	</body>
+	<script>
+		var box = document.getElementById('box');
+		var smallImg = document.getElementById('smallImg');
+		var sLi = smallImg.getElementsByTagName('li');
+		var bigImg = document.getElementById('bigImg');
+		var bLi = bigImg.getElementsByTagName('li');
+		var num = 0;
+		sLi[num].className = 'active';
+		bLi[num].className = 'active';
+		for( var i =0 ;i< sLi.length ; i++ ){
+			sLi[i].index = i;
+			sLi[i].onclick = function() {
+				//更新num的索引
+				num = this.index;
+				imgMove()
+			}
+
+		}
+		box.onmouseover=function(){
+			clearInterval(t);
+		};
+		box.onmouseout = function(){
+			t = setInterval( nextImg ,1000 );
+		};
+		function imgMove(){
+			for( var i =0 ;i<bLi.length ; i++){
+				bLi[i].className = '';
+				sLi[i].className = '';
+			}
+			bLi[num].className = 'active';
+			sLi[num].className = 'active';
+		}
+		function nextImg(){
+			num ++;
+			if(num >=bLi.length ){
+				num = 0;
+			}
+			imgMove()
+		}
+		var t = setInterval( nextImg ,1000 );
+
+	</script>
+</html>

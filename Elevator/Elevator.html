@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elevator</title>
+</head>
+<style>
+    body{
+        margin:0;
+        padding:0;
+    }
+    .left{
+        position: fixed;
+        top:100px;
+        list-style: none;
+    }
+    .left li{
+        width:50px;
+        height:50px;
+        border:1px solid #ddd;
+        text-align: center;
+        line-height: 50px;;
+    }
+    div{
+        width:500px;
+        height:500px;
+        border:1px solid red;
+        margin-left:20%;
+        box-sizing: border-box;
+    }
+    div:nth-child(odd){
+        background:blue;
+    }
+    div:nth-child(even){
+        background: red;
+    }
+</style>
+<body>
+    <ul class="left">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+    </ul>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</body>
+<script>
+    var ul = document.getElementsByClassName('left');
+    var oli =document.getElementsByTagName('li');
+    var div = document.getElementsByTagName('div');
+    var liLength = oli.length;
+    var divToTop;
+//    console.log(oli);
+    for( var i=0 ; i< liLength ; i++){
+        oli[i].index = i ;
+        div[i].index = i ;
+//        console.log(div[i]);
+        oli[i].onmouseover = function(){
+
+            this.style.background = 'red';
+
+//            console.log(document.defaultView.getComputedStyle( this , null).background);
+        };
+        oli[i].onmouseout = function (){
+//            var ind = this.index ;
+            this.style.background = '';
+//            console.log(ind);
+        };
+        oli[i].onclick = function(){
+            var ind = this.index;
+            console.log( ind );
+            divToTop = div[ind].offsetTop;
+//            var height =document.defaultView.getComputedStyle(div[ind] ,null).height;
+            return divToTop;
+            console.log(  divToTop );
+        };
+    }
+    window.onscroll = function(){
+        console.log(divToTop);
+    };
+</script>
+</html>
