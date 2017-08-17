@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body,div,ul,li {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        ul,li {
+            list-style-type: none;
+        }
+        /*楼梯导航列表ul*/
+        #floornav {
+            width: 32px;
+            position: fixed;
+            left: 50px;
+            top: 150px;
+            border: 1px solid #ddd;
+            /*最开始楼梯隐藏*/
+            display: none;
+        }
+        #floornav li {
+            width: 32px;
+            height: 32px;
+            position: relative;
+            border-bottom: 1px dotted #ddd;
+            font-size: 12px;
+            text-align: center;
+            line-height: 32px;
+            cursor: pointer;
+        }
+        /*top按钮样式,最后一个li*/
+        #floornav .lastli {
+            background-color: #C00;
+            color: #FFF;
+        }
+        /*悬浮在li之上，让span显示，背景颜色改变*/
+        #floornav li:hover span {
+            display: block;
+            background-color: #C00;
+            color: #FFF;
+        }
+        /*选中的li中的span*/
+        #floornav li.select span{
+            display: block;
+            background-color: #C00;
+            color: #FFF;
+        }
+        /*使用定位覆盖下面的文字*/
+        #floornav li span {
+            width: 32px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*避免看到后面的文字*/
+            background-color: #FFF;
+            display: none;
+        }
+        #wrap {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        #header {
+            width: 1000px;
+            height: 1000px;
+            background-color: #0F0;
+            line-height: 1000px;
+            font-size: 80px;
+        }
+        /*楼梯*/
+        .Louti {
+            height: 600px;
+            line-height: 600px;
+            font-size: 80px;
+        }
+        /*底部*/
+        #footer {
+            height: 400px;
+            line-height: 400px;
+            background-color: #F00;
+            font-size: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!--楼梯按钮-->
+    <ul id="floornav">
+        <li class="select">
+            1F<span>服饰</span>
+        </li>
+        <li>
+            2F<span>美妆</span>
+        </li>
+        <li>
+            3F<span>手机</span>
+        </li>
+        <li>
+            4F<span>家电</span>
+        </li>
+        <li>
+            5F<span>数码</span>
+        </li>
+        <li>
+            6F<span>运动</span>
+        </li>
+        <li>
+            7F<span>居家</span>
+        </li>
+        <li>
+            8F<span>母婴</span>
+        </li>
+        <li>
+            9F<span>食品</span>
+        </li>
+        <li>
+            10F<span>图书</span>
+        </li>
+        <li>
+            11F<span>服务</span>
+        </li>
+        <li class="lastli">
+            Top
+        </li>
+    </ul>
+    <div id="wrap">
+        <div id="header">
+            header头部区域
+        </div>
+        <div id="content">
+            <div class="Louti" style="background: #cc0033;">
+                服饰
+            </div>
+            <div class="Louti" style="background: #999933;">
+                美妆
+            </div>
+            <div class="Louti" style="background: #ccff33;">
+                手机
+            </div>
+            <div class="Louti" style="background: #006633;">
+                家电
+            </div>
+            <div class="Louti" style="background: #6666cc;">
+                数码
+            </div>
+            <div class="Louti" style="background: #ff6600;">
+                运动
+            </div>
+            <div class="Louti" style="background: #ffff00;">
+                居家
+            </div>
+            <div class="Louti" style="background: #3333ff;">
+                母婴
+            </div>
+            <div class="Louti" style="background: #ff00cc;">
+                食品
+            </div>
+            <div class="Louti" style="background: #669900;">
+                图书
+            </div>
+            <div class="Louti" style="background: #ff66cc;">
+                服务
+            </div>
+        </div>
+        <div id="footer">footer区域</div>
+    </div>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
+    <script>
+        $(function () {
+
+
+            //事件差 ,采用延迟,强制让浏览器滚动到顶部
+            window.onload = function () {
+                setTimeout(function () {
+                    //让chrome先滚动,
+                    $("body,html").scrollTop(0);
+                },100);
+            }
+
+            //给出了最后一个li之外添加点击事件
+            var $navs = $("#floornav li");//左侧可以点击的li
+            var $floors = $("#content .Louti");//楼梯->内容
+            //标记变量,标记当前是否有必要检测楼层
+            //没有必要的情况: 1.主动点击了某个楼层 2.滚动到顶部
+            var ifNeed = true;//默认有必要
+
+            //1.点击某一个楼层(不是最后一个)
+                $navs.not(".lastli").click(function () {
+
+                    //没有必要检测楼侧
+                    ifNeed = false;
+
+                    //滚动到对应的楼层,滚动到几何?
+                    var index = $(this).index();//获取点击的是第几个li
+                    var ot = $floors.eq(index).offset().top;//获取当前楼层相对于文档的top值,这个值可以和scrollTop值相等
+                    //做动画,滚动到对应的位置,兼容不同浏览器
+                    $("body,html").stop(true).animate({
+                        scrollTop: ot
+                    }, function () {
+                        //动画结束的之后有必要检测楼层
+                        ifNeed = true;
+                    });
+                    //让对应的li选中,select是选中的类
+                    $(this).addClass("select").siblings().removeClass("select");
+                });
+
+            //2.滚动到顶部,scrollTop为0即可
+            $("#floornav .lastli").click(function () {
+                ifNeed = false;//动画过程中,不需要检测楼层,因为知道目标scrollTop是0
+                $("body,html").animate({
+                    scrollTop: 0
+                }, function () {
+                    //动画完成
+                    ifNeed = true;
+                });
+            });
+
+            //3.用户在手动滚动的时候检测是第几楼
+            //滚动时检测 scrollTop值
+            //获取到scrollTop之后和 这11个楼层的 offset().top ... 进行比较,
+            //如果 scrollTop <  xxx,取第一次满足条件的就是对应的楼层
+            //需要使用循环遍历
+            $(window).scroll(function () {
+                var st = $(window).scrollTop();//获取当前滚动的距离
+                   //当滚动到一定的范围的时候才让左侧的楼梯出来
+                   if(st < 1000) {
+                       $("#floornav").stop(true).fadeOut(400);
+                   }
+                    else  {
+                       $("#floornav").stop(true).fadeIn(400);
+                   }
+
+                //是否有必要检测楼层
+                if(ifNeed == true) {
+                    for(var i = 0,len = $floors.size(); i<len; i++) {
+                        //每一楼层都有一个临界值
+                        //(第一次找到时)滚动不超过这个楼层的一半就算这个楼层
+                        //一旦超过一半就看下一次
+                        var boundValue = $floors.eq(i).offset().top + $floors.eq(i).height();
+                        //找到第一个满足条件的,不满足进行下一次寻找
+                        if(st < boundValue) {
+                            $navs.eq(i).addClass("select").siblings().removeClass("select");
+                            break;//
+                        }
+                    }
+                }
+            });
+
+        })
+    </script>
+</body>
+</html>
