@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Elevator</title>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
 </head>
 <style>
     body{
@@ -22,8 +23,12 @@
         line-height: 50px;;
     }
     div{
+        position: relative;
+       text-align: center;
         width:500px;
         height:500px;
+        line-height:500px;
+        font-size: 20px;
         border:1px solid red;
         margin-left:20%;
         box-sizing: border-box;
@@ -34,58 +39,140 @@
     div:nth-child(even){
         background: red;
     }
+    .left li:hover{
+        background:red;
+        color:#fff;
+    }
+    .left li:hover span  {
+        display : block;
+    }
+    .left li span {
+        position: relative;
+        top:-50px;
+        left:0;
+        display:none;
+    }
+    .left .select span{
+        display: block;
+        background-color: red;
+        color: #FFF;
+    }
+
 </style>
 <body>
     <ul class="left">
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>6</li>
-        <li>7</li>
+        <li class="select">1 <span>111</span> </li>
+        <li>2 <span>222</span></li>
+        <li>3 <span>333</span></li>
+        <li>4 <span>444</span></li>
+        <li>5 <span>555</span></li>
+        <li>6 <span>666</span></li>
+        <li>7 <span>777</span></li>
     </ul>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+
+        <div>1111</div>
+        <div>2222</div>
+        <div>3333</div>
+        <div>4444</div>
+        <div>5555</div>
+        <div>6666</div>
+        <div>7777</div>
+
+
 </body>
 <script>
-    var ul = document.getElementsByClassName('left');
-    var oli =document.getElementsByTagName('li');
-    var div = document.getElementsByTagName('div');
-    var liLength = oli.length;
-    var divToTop;
-//    console.log(oli);
-    for( var i=0 ; i< liLength ; i++){
-        oli[i].index = i ;
-        div[i].index = i ;
-//        console.log(div[i]);
-        oli[i].onmouseover = function(){
+//    let ul = document.getElementsByClassName('left');
+//    let oli =document.getElementsByTagName('li');
+//    let div = document.getElementsByTagName('div');
+//    let liLength = oli.length;
+//    let divToTop;
+//    for( let i=0 ; i< liLength ; i++){
+//        oli[i].index = i ;
+//        div[i].index = i ;
+////        divToTop = div[i].offsetTop;
+////        console.log(divToTop);
+//
+//        oli[i].onmouseover = function(){
+//            this.style.background = 'red';
+////            console.log(document.defaultView.getComputedStyle( this , null).background);
+//        };
+//        oli[i].onmouseout = function (){
+//            this.style.background = '';
+//        };
+//        oli[i].onclick = function(){
+//            let ind = this.index;
+////            内容距离页面顶部的距离
+//            divToTop = div[ind].offsetTop;
+//            $('body , html').animate({
+//                scrollTop : divToTop
+//            });
+////            var height =document.defaultView.getComputedStyle(div[ind] ,null).height;
+//            return divToTop;
+////            console.log( divToTop );
+////            onTopClick( i );
+//        };
+//        console.log(divToTop);
+//    }
+//
+//    window.onscroll = function(){
+////        获取当前距离页面顶部的距离
+//        let curTop = document.body.scrollTop;
+//            console.log( divToTop );
+//    };
 
-            this.style.background = 'red';
 
-//            console.log(document.defaultView.getComputedStyle( this , null).background);
-        };
-        oli[i].onmouseout = function (){
-//            var ind = this.index ;
-            this.style.background = '';
-//            console.log(ind);
-        };
-        oli[i].onclick = function(){
-            var ind = this.index;
-            console.log( ind );
-            divToTop = div[ind].offsetTop;
-//            var height =document.defaultView.getComputedStyle(div[ind] ,null).height;
-            return divToTop;
-            console.log(  divToTop );
-        };
-    }
-    window.onscroll = function(){
-        console.log(divToTop);
-    };
+//获取li
+    let lis = $('.left li');
+//获取div
+    let divs = $('div');
+//点击左边楼梯，滑动内容区
+    lis.click(function(){
+        let ind = $(this).index();
+//        console.log(ind)
+        let $this = $(this);
+        let divToTop = divs[ind].offsetTop;
+        $this.addClass('select').siblings().removeClass('select');
+        $('html body').animate({
+            scrollTop : divToTop
+        });
+    });
+    $(window).scroll(function(){
+
+//        页面滑动获取当前距离顶部的距离
+        let toTop = document.body.scrollTop;
+//        console.log( 'toTop   ' +  toTop);
+
+
+//        每个div距离顶部的距离
+        let divToTop = 0 ;
+        let ind ;
+        for( let i = 0,arr=[],arr2=[] ; i<divs.length ; i++){
+            divToTop += divs.eq(i).height();
+//            console.log(divToTop)
+//            let arr1 = arr.length;
+//            console.log( 'arr1   ' + arr );
+
+//            将每个div距离顶部的距离压入数组
+            arr.push(divToTop);
+//            let arr2 = arr.length ;
+//            console.log( 'arr   ' + arr );
+
+//            当前距离顶部距离在第几个div的区域内
+            if( toTop < arr[i] ){
+
+//                将当前div的index压入数组
+                arr2.push(i);
+//                取当前第一个div的index
+                ind = arr2[0];
+//                内容滑动时左边楼梯样式变化
+                lis.eq(ind).addClass('select').siblings().removeClass('select');
+//                console.log( arr2[0] );
+
+            }
+
+
+        }
+//        console.log(divToTop);
+    });
 </script>
 </html>
