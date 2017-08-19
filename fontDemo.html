@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fontDemo</title>
+</head>
+<style>
+    .rgba{
+        /*透明文字*/
+        background-color: pink ;
+        /* rgba只对文字偶透明度*/
+        /*color:rgba(0,0,0,.1);*/
+        /** opacity对整个div都有遮罩效果*/
+        opacity: 0.4;
+    }
+    div{
+        width:50%;
+        margin-left:25%;
+        font-size:30px;
+    }
+    .textShadow{
+        /*模糊文字*/
+        text-shadow: 0 0 5px red;
+        /** text-fill-color 是c3新属性只适用于webkit内核的浏览器  ，设置对象中文字的填充颜色*/
+        -webkit-text-fill-color: transparent;
+    }
+    .textStroke{
+        /*镂空文字*/
+        /* text-stroke 来给文字外围描边*/
+        -webkit-text-stroke: 1px red;
+        /** text-fill-color 把文字的填充颜色设为透明*/
+        -webkit-text-fill-color: transparent;
+    }
+    .linearGradient{
+        /*渐变文字*/
+        background: linear-gradient(to bottom ,white ,black);
+        -webkit-text-fill-color: transparent;
+        /*指定背景只在文字底下显示*/
+        -webkit-background-clip: text;
+    }
+    .textImgBackground{
+        /*图片背景文字*/
+        height:800px;
+        width:700px;
+        background-image: url('img/bg1.jpg');
+        /*  contain 把图像图像扩展至最大尺寸，以使其宽度和高度完全适应内容区域*/
+        background-size: contain;
+        /*background-size: 200%;*/
+        writing-mode: vertical-lr;
+        background-repeat: no-repeat;
+        font-size:70px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 500px;
+        word-wrap: break-word;/*英文的时候需要加上这句，自动换行*/
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+    }
+</style>
+<body>
+<div class="rgba">Nice to meet you </div>
+<div class="textShadow">Nice to meet you</div>
+<div class="textStroke">Nice to meet you</div>
+<div class="linearGradient">Nice to meet you</div>
+<div class="textImgBackground">刚好遇见你</div>
+</body>
+</html>
