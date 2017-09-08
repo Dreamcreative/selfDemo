@@ -55,8 +55,142 @@
         border-top-left-radius: 10%;
         border-bottom-right-radius:50%;
     }
+    .button{
+        position: absolute;
+        /*display: inline;*/
+        top:290px;
+        left:150px;
+        width:160px;
+        height:80px;
+        border-radius: 40px;
+        background:red;
+        border:4px solid #ddd;
+        box-sizing: border-box;
+        outline: none;
+        /*text-shadow: 1px 1px  #999;*/
+    }
+    .button:before{
+        content:'';
+        position: absolute;
+        /*width:2px;*/
+        height:40px;
+        top:17px;
+        left:30px;
+        border-left: 3px solid #fff;
+    }
+    .button:after{
+        content:'';
+        position: absolute;
+        box-sizing: border-box;
+        top:-3px;
+        /*left:80px;*/
+        width:80px;
+        height:80px;
+        background: #ddd;
+        border-radius: 100%;
+        border:2px solid green;
+        /*text-shadow: 3px 3px #ddd;*/
+    }
+    .buttonOpen{
+        left:80px;
+        /*background: #ddd;*/
+    }
+    /*.button:checked{*/
+        /*background: #000;*/
+    /*}*/
+    /*.checkbox {*/
+        /*position: relative;*/
+        /*display: inline-block;*/
+    /*}*/
+
+    /*.checkbox:after , .checkbox:before {*/
+        /*font-family: FontAwesome;*/
+        /*-webkit-font-feature-settings: normal;*/
+        /*-moz-font-feature-settings: normal;*/
+        /*font-feature-settings: normal;*/
+        /*-webkit-font-kerning: auto;*/
+        /*-moz-font-kerning: auto;*/
+        /*font-kerning: auto;*/
+        /*-webkit-font-language-override: normal;*/
+        /*-moz-font-language-override: normal;*/
+        /*font-language-override: normal;*/
+        /*font-stretch: normal;*/
+        /*font-style: normal;*/
+        /*font-synthesis: weight style;*/
+        /*font-variant: normal;*/
+        /*font-weight: normal;*/
+        /*text-rendering: auto;*/
+    /*}*/
+    /*.checkbox label {*/
+        /*width:62px;*/
+        /*height: 32px;*/
+        /*background: #ccc;*/
+        /*position: relative;*/
+        /*display: inline-block;*/
+        /*border-radius: 46px;*/
+        /*-webkit-transition: 0.4s;*/
+        /*transition: 0.4s;*/
+    /*}*/
+    /*.checkbox label:after {*/
+        /*content: '';*/
+        /*position: absolute;*/
+        /*width: 32px;*/
+        /*height: 32px;*/
+        /*border-radius: 100%;*/
+        /*left: 0;*/
+        /*top: 0;*/
+        /*z-index: 2;*/
+        /*background: #fff;*/
+        /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);*/
+        /*-webkit-transition: 0.4s;*/
+        /*transition: 0.4s;*/
+    /*}*/
+    /*.checkbox input {*/
+        /*position: absolute;*/
+        /*left: 0;*/
+        /*top: 0;*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*z-index: 5;*/
+        /*opacity: 0;*/
+        /*cursor: pointer;*/
+    /*}*/
+    /*.checkbox input:hover + label:after {*/
+        /*box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);*/
+    /*}*/
+    /*.checkbox input.default + label:after {*/
+        /*left: 31px;*/
+    /*}*/
+
+    /*.model-1 .checkbox input.default  + label {*/
+        /*background: #E60B49;*/
+    /*}*/
+    /*.model-1 .checkbox input.default  + label:after {*/
+        /*background: #FFFFFF;*/
+    /*}*/
 </style>
 <body>
     <div class="talkbubble"></div>
+    <div>
+        <input class="button">
+        <label for=""></label>
+    </div>
+    
+    <!--<div class="checkbox">-->
+        <!--<input type="checkbox" id="defaults" class="nodefault" onclick="">-->
+        <!--<label></label>-->
+    <!--</div>-->
+    <script>
+        var button =  document.getElementsByClassName('button')[0];
+//        console.log(button);
+        button.click(function () {
+            console.log('111');
+            if( this.hasAttribute('checked')){
+                console.log('has');
+            }else{
+                console.log('no');
+            }
+        });
+    </script>
 </body>
 </html>

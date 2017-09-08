@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>lazy Load</title>
+</head>
+<body>
+    <div>
+        <ul>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="js/lazyload.js"></script>
+<script>
+//    var lazyImg = document.getElementsByClassName('lazy');
+$(function(){
+    $('img.lazy').lazyload({
+        threshold:200
+    });
+})
+
+</script>
+</html>
