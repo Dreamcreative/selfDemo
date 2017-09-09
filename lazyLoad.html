@@ -4,21 +4,27 @@
     <meta charset="UTF-8">
     <title>lazy Load</title>
 </head>
+<style>
+    img.lazy{
+        width:350px;
+        height:350px;
+    }
+</style>
 <body>
     <div>
         <ul>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
-            <li><img  class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
+            <li><img class="lazy" src="img/1.jpg" width="300" height="350" data-original="img/111.jpg" alt=""></li>
         </ul>
     </div>
 </body>
@@ -26,11 +32,85 @@
 <script type="text/javascript" src="js/lazyload.js"></script>
 <script>
 //    var lazyImg = document.getElementsByClassName('lazy');
-$(function(){
-    $('img.lazy').lazyload({
-        threshold:200
-    });
-})
 
+//var userId = 101;
+//var https = 'http://www.jingomall.cn/';
+//$.ajax({
+//    type: "post",
+//    url: "https://www.jingomall.com/purse/red/friends",
+//    data: {
+//        userId: userId
+//    },
+//    async: "false",
+//    dataType: "json",
+//    success:function(data){
+//        console.log(data);
+//        var userName = data.userName;
+//        var dataLength = data.length;
+//        //自己的头像
+////
+//        for( var i = 0; i< dataLength;i++){
+//            var html='';
+//
+//            var userPhoto = data[i].userPhoto;
+//            console.log( https + userPhoto);
+//            html+= '<li>'
+//                    + '<div class="avator">'
+//                    + '<img src="img/111.jpg" alt=""/>'
+//                    + '<img class="lazy" src="img/1.jpg" width="350" height="350" data-original="' + https + userPhoto + '"  alt=""/>'
+//                    + '</div>'
+//            +'</li>';
+//            $('ul').append(html);
+//            $('img.lazy').lazyload({
+////                threshold: "200",
+//                effect:"fadeIn"
+//            });
+//        }
+////        userPhoto = (userPhoto ? userPhoto : defaultImg );
+//    }
+//})
+
+window.onload = function () {
+    var windowH,//可视区高度
+            imgs,
+            imgTop,
+            dataUrl,
+            scTop; //滚动条高度
+    windowH = document.documentElement.clientHeight;
+    imgs = document.getElementsByTagName('img');
+    console.log(windowH , imgs);
+    window.onscroll = function () {
+        scTop = document.documentElement.scrollTop || document.body.scrollTop;
+        for(var i=0;i<imgs.length ;i++){
+            imgTop = imgs[i].offsetTop;
+//            console.log(imgTop);
+            if(imgTop-windowH<scTop &&imgTop-windowH>0 && imgs[i].getAttribute("data-original")!=imgs[i].getAttribute("src")){
+                dataUrl = imgs[i].getAttribute("data-original");
+//                console.log(dataUrl);
+                imgs[i].setAttribute('src',dataUrl);
+            }
+        }
+    }
+}
+
+//    var imgs = document.getElementsByTagName('img');
+//    var len = imgs.length;
+//    var n= 0;//存储图片加载到的位子。避免每次都从第一张图片开始遍历
+//var dataUrl;
+//    window.onscroll = function () {
+//        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//        var seeHeight = document.documentElement.clientHeight;
+//        for(var i=n ; i<len ;i++){
+//            //如果图片距离页面顶部的距离小于 页面的可视高度+滚动高度
+//            if(imgs[i].offsetTop <seeHeight + scrollTop){
+//                dataUrl = imgs[i].getAttribute('data-original');
+//                if( imgs[i].getAttribute('src') != dataUrl){
+//                    imgs[i].src = dataUrl;
+//                }
+//                n=i+1;
+//                console.log( "n=++++" + n);
+//            }
+//        }
+//    }
 </script>
 </html>
