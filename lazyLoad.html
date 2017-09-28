@@ -75,19 +75,27 @@ window.onload = function () {
             imgs,
             imgTop,
             dataUrl,
-            scTop; //滚动条高度
-    windowH = document.documentElement.clientHeight;
+            scTop, //滚动条高度
+            n=0;
     imgs = document.getElementsByTagName('img');
-    console.log(windowH , imgs);
+//    console.log(windowH , imgs);
     window.onscroll = function () {
         scTop = document.documentElement.scrollTop || document.body.scrollTop;
-        for(var i=0;i<imgs.length ;i++){
+        windowH = document.documentElement.clientHeight;
+        for(var i=n;i<imgs.length ;i++){
             imgTop = imgs[i].offsetTop;
-//            console.log(imgTop);
-            if(imgTop-windowH<scTop &&imgTop-windowH>0 && imgs[i].getAttribute("data-original")!=imgs[i].getAttribute("src")){
+            if( imgTop< scTop -windowH ){
+                dataUrl = imgs[i].getAttribute("data-original");
+                imgs[i].setAttribute('src',dataUrl);
+            }
+            if(imgTop<windowH + scTop ){
                 dataUrl = imgs[i].getAttribute("data-original");
 //                console.log(dataUrl);
+                console.log( imgTop-windowH<scTop);
+
                 imgs[i].setAttribute('src',dataUrl);
+                n ++;
+                console.log( n);
             }
         }
     }
@@ -96,7 +104,7 @@ window.onload = function () {
 //    var imgs = document.getElementsByTagName('img');
 //    var len = imgs.length;
 //    var n= 0;//存储图片加载到的位子。避免每次都从第一张图片开始遍历
-//var dataUrl;
+//    var dataUrl;
 //    window.onscroll = function () {
 //        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 //        var seeHeight = document.documentElement.clientHeight;

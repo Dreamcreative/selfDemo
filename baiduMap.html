@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body, html {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+        #content1,#content2{ width:100%; height:50% }
+        #content2{ margin-top: 20px;}
+        #map2,#allmap{
+            width:100%; height:100%;
+        }
+        /*#map2{ margin-top:50%; }*/
+    </style>
+    <!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=tLgbYL7Ftot45hnQknqczhLqSlnU3GtO"></script>-->
+    <title>异步加载地图</title>
+</head>
+<body>
+<div id="content1">
+    <div id="allmap"></div>
+</div>
+<div id="content2">
+    <div id="map2"></div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    function init(){
+        // 百度地图API功能
+        var map = new BMap.Map("allmap",{ "minZoom":4 ,"maxZoom":9});    // 创建Map实例 设置放大缩小级别
+        map.centerAndZoom("杭州", 11);  // 初始化地图,设置中心点位置 和地图级别
+        map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+//        map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+        var map2 = new BMap.Map('map2');
+        map2.centerAndZoom( "上海" , 11 );
+        map2.addControl( new BMap.MapTypeControl());
+//        map2.setCurrentCity('北京');
+        map2.enableScrollWheelZoom(true);
+        setTimeout( function(){
+            map.panTo( new BMap.Point( 113.262232,23.154345) )
+        } ,2000)
+    }
+    function loadScript(){
+        var ak = 'tLgbYL7Ftot45hnQknqczhLqSlnU3GtO';
+        var script = document.createElement('script');
+        script.type = "text/javascript";
+        script.src = 'http://api.map.baidu.com/api?v=2.0&ak='+ak+'&callback=init';
+        document.body.append(script);
+//        init();
+    }
+    window.onload = loadScript;
+</script>
