@@ -1,85 +1,105 @@
+<!--
+
+    节流  在规定时间内 ，保证执行一次
+-->
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cmn-Hans">
+
 <head>
-    <meta charset="UTF-8">
-    <title>throttle</title>
-</head>
-<body>
-<div style="height:500px">
-    <div id="demo" style="position:fixed;"></div>
-</div>
-<button class="click">click</button>
-<script src="js/jquery-3.1.1.js"></script>
-<script>
-    var COUNT = 0, demo = document.getElementById('demo');
-    function testFn() {demo.innerHTML += 'testFN 被调用了 ' + ++COUNT + '次<br>';}
-
-//    var throttle = function (fn, delay, atleast) {
-//        var timer = null;
-//        var previous = null;
-//
-//        return function () {
-//            var now = +new Date();
-//
-//            if ( !previous ) previous = now;
-//            if ( atleast && now - previous > atleast ) {
-//                fn();
-//                // 重置上一次开始时间为本次结束时间
-//                previous = now;
-//                clearTimeout(timer);
-//            } else {
-//                clearTimeout(timer);
-//                timer = setTimeout(function() {
-//                    fn();
-//                    previous = null;
-//                }, delay);
-//            }
-//        }
-//    };
-
-//    节流函数
-//    function throttle( fn , delay , atleast ){
-//        let timer = null;
-//        let previous = null;
-//
-//        return function(){
-//            let now = new Date();
-//            if( !null ){ previous = now ;}
-//            if( now - previous >atleast && atleast){
-//                fn();
-//                previous = now;
-//                clearTimeout(timer);
-//            }else {
-//                clearTimeout(timer);
-//                timer = setTimeout(function(){
-//                    fn();
-//                    previous =null;
-//                } ,delay)
-//            }
-//        }
-//    }
-    
-    function throttle ( fn , delay , atleast){
-        let timer = null ;
-        let previous = null;
-        return function () {
-            let now = new Date();
-            if( !previous ){ previous = now ;}
-            if( atleast && now - previous >atleast ){
-                fn();
-                clearTimeout(timer);
-            }else{
-                clearTimeout(timer);
-                timer = setTimeout( function(){
-                    fn();
-                    previous = null ;
-                } ,delay )
-            }
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1">
+    <title>debounce</title>
+    <style>
+        #container{
+            width: 100%; height: 200px; line-height: 200px; text-align: center; color: #fff; background-color: #444; font-size: 30px;
         }
-    }
-    $('.click').click(throttle(testFn ,2000));
-//    window.onscroll = throttle(testFn, 200);
-    // window.onscroll = throttle(testFn, 500, 1000);
-</script>
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
 </body>
+<script>
+    var count =1 ;
+    var container = document.getElementById("container");
+    function getUserAction(){
+        container.innerHTML = count++ ;
+    }
+    container.onmousemove = throttle(getUserAction , 1000 ,true )
+    // container.onmousemove = getUserAction;
+    // function throttle( fn , wait ){
+    //     //立即执行 停止后无法再次执行
+    //     var preview = 0 ;
+    //     return function(){
+    //         var _this = this ;
+    //         var args= arguments ;
+    //         var now = +new Date() ;
+    //         if( now-preview >wait ){
+    //             fn.apply(_this , args ) ;
+    //             preview = now ;
+    //         }
+    //     }
+    // }
+
+    // function throttle( fn , wait ){
+    //     //不立即执行 ，停止后还可以再次执行
+    //     var timer = null ;
+    //     var previou = 0 ;
+    //     return function(){
+    //         var _this = this ;
+    //         var args = arguments;
+    //         var now = +new Date();
+    //         if(!timer){
+    //             // timer 不存在 则设置定时器
+    //             timer = setTimeout( function (){
+    //                 fn.apply(_this , args);
+    //                 timer= null;
+    //                 previou = now ;
+    //             }, wait)
+    //         }
+    //     }
+    // }
+
+    function throttle( fn ,wait  ){
+        var timer = null ;
+        var previou = 0 ;
+        var _this ;
+        var args ;
+        var later = function(){
+            previou = +new Date();
+            timer = null;
+            fn.apply(_this , args );
+        }
+        return function(){
+            args = arguments;
+            _this = this ;
+            var now = +new Date() ;
+            //下次触发 fn的剩余时间
+            var remaining = wait - (now-previou);
+            if( remaining<=0 || remaining > wait ){
+                //如果没有剩余时间 或者修改了系统时间
+                if( timer ){
+                    clearTimeout( timer );
+                    timer = null;
+                }
+                fn.apply( _this , args);
+                previou = now ;
+            }else if( !timer ){
+                timer = setTimeout( later , remaining )
+            }
+            // if( !timer ){
+            //     timer = setTimeout( function(){
+            //         fn.apply(_this ,args );
+            //         timer= null;
+            //         previou = now ;
+            //     },wait)
+            // }else if( now-previou >wait  ){
+            //     fn.apply(_this ,args );
+            //     previou = now;
+            // }
+        }
+
+    }
+</script>
 </html>
