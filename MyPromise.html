@@ -12,6 +12,34 @@
     const PENDING = 'PENDING'
     const FULFILLED = 'FULFILLED'
     const REJECTED = 'REJECTED'
+    const promiseResolveExcute = (promise2, x, resolve, reject) => {
+      if (x === promise2) {
+        throw new Error("promise 循环引用")
+      }
+      if (x instanceof MyPromise) {
+        if (x.state === PENDING) {
+          // ??????????????
+          x.then(y => {
+            promiseResolveExcute(promise2, y, resolve, reject)
+          }, reject)
+        }
+        x.state === FULFILLED && resolve(x)
+        x.state === REJECTED && reject(x)
+      }
+      if ((typeof x === 'function' || typeof x === "object") && typeof x != null && x.then) {
+        if (typeof x.then === 'function') {
+          x.then(y => {
+            resolve(y)
+          }, err => {
+            reject(err)
+          })
+        } else {
+          resolve(x)
+        }
+      } else {
+        resolve(x)
+      }
+    }
     class MyPromise {
 
       finally(callback) {
@@ -180,105 +208,108 @@
     //   });
 
     // 步骤2
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step2");
-    //   }).then(data => {
-    //     console.log("获取到数据：", data);
-    //   });
+    // const promise = new MyPromise((resolve, reject) => {
+    //   resolve("step2");
+    // }).then(data => {
+    //   console.log("获取到数据：", data);
+    // });
 
     // 步骤3
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step3");
-    //     resolve("step3.1");
-    //   }).then(data => {
-    //     console.log("获取到数据：", data);
-    //   });
+    // const promise = new MyPromise((resolve, reject) => {
+    //   resolve("step3");
+    //   resolve("step3.1");
+    // }).then(data => {
+    //   console.log("获取到数据：", data);
+    // });
 
     // 步骤4
-    //   const promise = new MyPromise((resolve, reject) => {
+    // const promise = new MyPromise((resolve, reject) => {
     //     resolve("step4");
     //   })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //       return "step4.1";
-    //     })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //     });
-
-    // 步骤5
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step5");
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
+    //     return "step4.1";
     //   })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //       return "step5.1";
-    //     })
-    //     .then()
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //     });
-
-    // 步骤6
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step6");
-    //   })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //       return {
-    //         then(r, j) {
-    //           r("step6.1");
-    //         }
-    //       };
-    //     })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //     });
-
-    // 步骤7
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step7");
-    //   })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //       return new MyPromise(resolve => {
-    //         resolve("7.1");
-    //       });
-    //     })
-    //     .then(data => {
-    //       console.log("获取到数据：", data);
-    //     });
-
-    // 步骤8
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve(
-    //       new Promise(resolve => {
-    //         resolve("step8");
-    //       })
-    //     );
-    //   }).then(data => {
+    //   .then(data => {
     //     console.log("获取到数据：", data);
     //   });
 
-    // step9
-    //   const promise = new MyPromise((resolve, reject) => {
-    //     resolve("step9");
-    //   });
-    //   const promise1 = promise.then(data => {
-    //     return promise1;
+    // 步骤5
+    // const promise = new MyPromise((resolve, reject) => {
+    //     resolve("step5");
+    //   })
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
+    //     return "step5.1";
+    //   })
+    //   .then()
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
     //   });
 
-    // step10
-    //   MyPromise.all([
-    //     new MyPromise(resolve => {
-    //       resolve(1);
-    //     }),
-    //     new MyPromise(resolve => {
-    //       resolve(2);
-    //     })
-    //   ]).then(dataList => {
-    //     console.log(dataList);
+    // 步骤6
+    // const promise = new MyPromise((resolve, reject) => {
+    //     resolve("step6");
+    //   })
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
+    //     return {
+    //       then(r, j) {
+    //         r("step6.1");
+    //       }
+    //     };
+    //   })
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
     //   });
+
+    // 步骤7
+    // const promise = new MyPromise((resolve, reject) => {
+    //     resolve("step7");
+    //   })
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
+    //     return new MyPromise(resolve => {
+    //       resolve("7.1");
+    //     });
+    //   })
+    //   .then(data => {
+    //     console.log("获取到数据：", data);
+    //   });
+
+    // 步骤8
+    // const promise = new MyPromise((resolve, reject) => {
+    //   resolve(
+    //     new Promise(resolve => {
+    //       resolve("step8");
+    //     })
+    //   );
+    // }).then(data => {
+    //   console.log("获取到数据：", data);
+    // });
+
+    // step9
+    // const promise = new MyPromise((resolve, reject) => {
+    //   resolve("step9");
+    // });
+    // const promise1 = promise.then(data => {
+    //   return promise1;
+    // });
+
+    // step10
+    // MyPromise.race([
+    //   new MyPromise((resolve, reject) => {
+    //     reject(3)
+    //   }),
+    //   new MyPromise(resolve => {
+    //     resolve(1);
+    //   }),
+    //   new MyPromise(resolve => {
+    //     resolve(2);
+    //   }),
+    // ]).then(dataList => {
+    //   console.log(dataList);
+    // });
 
     // step11
     //   const promise = new MyPromise((resolve, reject) => {
