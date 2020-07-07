@@ -13,32 +13,171 @@
     const FULFILLED = 'FULFILLED'
     const REJECTED = 'REJECTED'
     class MyPromise {
+
+      finally(callback) {
+        let p = this.constructor
+        return this.then(
+          value => p.resolve(callback()).then(() => value),
+          err => p.resolve(callback()).then(() => {
+            throw err
+          })
+        )
+      }
+      static race(promises) {
+        return new MyPromise((resolve, reject) => {
+          for (let i = 0; i < promises.length; i++) {
+            promises[i].then(val => {
+              resolve(val)
+            }, err => {
+              reject(err)
+            })
+          }
+        })
+      }
+      static resolve(val) {
+        return new MyPromise((resolve, reject) => {
+          if (val == null) resolve(null)
+          if (val instanceof MyPromise) {
+            val.then(y => {
+              resolveExcutor(this, y, resolve, reject)
+            }, err => {
+              reject(err)
+            })
+          }
+          resolve(val)
+        })
+      }
+      static all(promises) {
+        return new MyPromise((resolve, reject) => {
+          let result = []
+          let index = 0
+          for (let i = 0; i < promises.length; i++) {
+            promises[i].then(y => {
+              result[i] = y
+              index++
+              if (index === promises.length) {
+                resolve(result)
+              }
+            }, err => {
+              reject(err)
+            })
+          }
+        })
+      }
       constructor(fn) {
         this.state = PENDING
-        this.value = null
+        this.value = undefined;
         this.resolveCallbacks = []
         this.rejectCallbacks = []
+        const resolve = (val) => {
+          setTimeout(() => {
+            if ((typeof val === "function" || typeof val === "object") && val !== null && typeof val.then ===
+              "function") {
+              resolveExcutor(this, val, resolve, reject)
+              return
+            }
+            if (this.state === PENDING) {
+              this.state = FULFILLED
+              this.value = val
+              this.resolveCallbacks.map(fn => fn(val))
+            }
+          }, 1000)
+        }
+        const reject = (val) => {
+          setTimeout(() => {
+            if ((typeof val === "function" || typeof val === "object") && val !== null && typeof val
+              .then === "function") {
+              resolveExcutor(this, val, resolve, reject)
+              return
+            }
+            if (this.state === PENDING) {
+              this.state = REJECTED
+              this.value = val
+              this.rejectCallbacks.map(fn => fn())
+            }
+          }, 1000)
+        }
         fn(resolve, reject)
       }
-      then(resolve) {
-        setTimeout(() => {
-          resolve()
-        }, 1000);
+      then(onFulfilled = val => val, onRejected = err => {
+        throw err
+      }) {
+        let promise2 = null
+        if (this.state === PENDING) {
+          promise2 = new MyPromise((resolve, reject) => {
+            this.resolveCallbacks.push(() => {
+              const x = onFulfilled(this.value)
+              resolveExcutor(promise2, x, resolve, reject)
+            })
+            this.rejectCallbacks.push(() => {
+              const x = onRejected(this.value)
+              resolveExcutor(promise2, x, resolve, reject)
+            })
+          })
+        }
+        if (this.state === FULFILLED) {
+          promise2 = new MyPromise((resolve, reject) => {
+            this.resolveCallbacks.push(() => {
+              const x = onFulfilled(this.value)
+              resolveExcutor(promise2, x, resolve, reject)
+            })
+          })
+        }
+        if (this.state === REJECTED) {
+          promise2 = new MyPromise((resolve, reject) => {
+            this.rejectCallbacks.push(() => {
+              const x = onRejected(this.value)
+              resolveExcutor(promise2, x, resolve, reject)
+            })
+          })
+        }
+        return promise2
       }
-      catch () {}
-      finnally() {}
+      catch (err) {
+        return new MyPromise((resolve, reject) => {
+          reject(err)
+        })
+      }
+    }
+
+    function resolveExcutor(promise2, x, resolve, reject) {
+      if (x === promise2) {
+        throw new Error("循环调用promise")
+      }
+      if (x instanceof MyPromise) {
+        if (x.state === PENDING) {
+          x.then(y => {
+            resolveExcutor(promise2, y, resolve, reject)
+          })
+        }
+        x.state === FULFILLED && resolve(x)
+        x.state === REJECTED && reject(x)
+      }
+      if ((typeof x === "function" || typeof x === "object") && typeof x !== null) {
+        if (typeof x.then === "function") {
+          x.then(y => {
+            resolve(y)
+          }, err => {
+            reject(err)
+          })
+        } else {
+          resolve(x)
+        }
+      } else {
+        resolve(x)
+      }
     }
   </script>
   <script>
     // 步骤1
-    const promise = new MyPromise((resolve, reject) => {
-      setTimeout(() => {
-        // ajax 获取数据
-        resolve("step1");
-      }, 1000);
-    }).then(data => {
-      console.log("获取到数据：", data);
-    });
+    //   const promise = new MyPromise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       // ajax 获取数据
+    //       resolve("step1");
+    //     }, 1000);
+    //   }).then(data => {
+    //     console.log("获取到数据：", data);
+    //   });
 
     // 步骤2
     //   const promise = new MyPromise((resolve, reject) => {
@@ -154,19 +293,46 @@
     //   );
 
     // step12
-    // const promise = new MyPromise((resolve, reject) => {
-    //   resolve("step12");
-    // });
+    const promise = new MyPromise((resolve, reject) => {
+      resolve("step12");
+    });
 
-    // setTimeout(() => {
-    //   promise.then(data => {
-    //     console.log("step12:", data);
-    //   });
+    setTimeout(() => {
+      promise.then(data => {
+        console.log("step12:", data);
+      });
 
-    //   promise.then(data => {
-    //     console.log("step12:", data);
-    //   });
-    // }, 1000);
+      promise.then(data => {
+        console.log("step12:", data);
+      });
+    }, 1000);
+
+    // finally
+    const promise = new MyPromise((resolve, reject) => {
+      reject("step11");
+    })
+    promise.then(
+        data => {
+          console.log("resolve 值：", data);
+          return 'resolve'
+        },
+        rej => {
+          console.log("reject 值：", rej);
+          return "reject"
+        }
+      )
+      .finally(() => {
+        console.log(2222222222)
+        return 1111111
+      })
+      .then((data) => {
+        console.log("data", data)
+        return 3333333333
+        // throw new Error("finnally")
+      }).then(val => {
+        console.log("val", val)
+
+      })
   </script>
 </body>
 

@@ -38,4 +38,10 @@
 
 11、实现一个 promise，支持 reject 和 catch。        
 
-12、实现一个 promise，支持处理完成态或失败态的then。   
+12、实现一个 promise，支持处理完成态或失败态的then。  
+
+13、实现all
+
+14、实现race
+
+15、实现finally
