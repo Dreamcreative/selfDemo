@@ -14,14 +14,30 @@
     const REJECTED = 'REJECTED'
 
     class MyPromise {
+      /**
+        finally:
+          无论promise状态是什么 都会执行
+          并且会将之前 resolve 或者reject的值穿透到之后的then中
+       */
       finally(callback) {
+        // this 当前调用 finally的方法，这里会是一个实例之后的promise
         console.log('this++++', this)
+        // this.constructor 是一个promise的构造函数
         console.log(1111111111, this.constructor)
+        // 获得一个MyPromise的构造函数
         const p = this.constructor
-        this.then(value => p.then(callback()).then(() => value), err => p.then(callback()).then(() => err))
+        // finally只是执行以下当前的回调，如果在之前还有返回值，会穿透到后面的then或者是catch
+        this.then(
+          value => p.then(callback()).then(() => value),
+          err => p.then(callback()).then(() => err)
+        )
       }
+      /**
+        race 执行传入的 promise数组，只要其中有一个promise resolve或者reject，就会直接返回
+      */
       static race(promises) {
         return new MyPromise((resolve, reject) => {
+          // 遍历执行传入的promises 执行之后，只会返回第一个 resolve或者reject的值
           for (let i = 0; i < promises.length; i++) {
             promises[i].then(val => {
               resolve(val)
@@ -31,8 +47,17 @@
           }
         })
       }
+      /**
+        resolve 
+        返回一个resolve状态的 promise
+        值为传入的value
+      */
       static resolve(val) {
         return new MyPromise((resolve, reject) => {
+          // 传入值分为3类
+          // 1 普通的值 直接resolve返回
+          // 2 具有then方法的 对象 
+          // 3 一个promise
           if (val == null) resolve(null)
           if (val instanceof MyPromise) {
             val.then(y => {
@@ -44,6 +69,12 @@
           resolve(val)
         })
       }
+      /**
+        all
+        批量执行传入的 promise数组
+        当所有promise都成功之后，返回一个所有值得数组
+        当其中一个promise执行失败，直接reject 错误
+      */
       static all(promises) {
         return new MyPromise((resolve, reject) => {
           let result = []
@@ -64,16 +95,20 @@
       constructor(fn) {
         this.state = PENDING
         this.value = undefined;
+        // 存储所有resolve的回调，当then调用完毕之后遍历执行所有回调函数
         this.resolveCallbacks = []
+        // 存储所有reject的回调，当then调用完毕之后遍历执行所有回调函数
         this.rejectCallbacks = []
         const resolve = (val) => {
           setTimeout(() => {
+            // 如果传入的值是一个thenable对象就不能走正常的调用逻辑， 需要走thenable对象的逻辑
             if ((typeof val === "function" || typeof val === "object") && val !== null && typeof val.then ===
               "function") {
               resolveExcutor(this, val, resolve, reject)
               return
             }
             if (this.state === PENDING) {
+              // 只有state为PENDING状态才能够转换为FULFILLED状态
               this.state = FULFILLED
               this.value = val
               this.resolveCallbacks.map(fn => fn(val))
@@ -82,18 +117,21 @@
         }
         const reject = (val) => {
           setTimeout(() => {
+            // 如果传入的值是一个thenable对象就不能走正常的调用逻辑， 需要走thenable对象的逻辑
             if ((typeof val === "function" || typeof val === "object") && val !== null && typeof val
               .then === "function") {
               resolveExcutor(this, val, resolve, reject)
               return
             }
             if (this.state === PENDING) {
+              // 只有state为PENDING状态才能转换为REJECTED状态
               this.state = REJECTED
               this.value = val
               this.rejectCallbacks.map(fn => fn())
             }
           }, 1000)
         }
+        // promise会在传入的回调中 传入resolve，reject函数来执行
         fn(resolve, reject)
       }
       then(onFulfilled = val => val, onRejected = err => {
@@ -102,6 +140,10 @@
         let promise2 = null
         if (this.state === PENDING) {
           promise2 = new MyPromise((resolve, reject) => {
+            // 将then的回调压入到 resolveCallbacks中
+            // 将回调执行一遍，得到回调的返回值
+            // 将返回值和当前的promise传入 resolve执行器中，递归执行，
+            // 当返回值为 thenable对象 或者是一个 promise的特殊情况
             this.resolveCallbacks.push(() => {
               const x = onFulfilled(this.value)
               resolveExcutor(promise2, x, resolve, reject)
@@ -131,13 +173,19 @@
         return promise2
       }
       catch (err) {
+        // 处理.catch方法之前的错误
         return new MyPromise((resolve, reject) => {
           reject(err)
         })
       }
     }
-
+    // 迭代执行
     function resolveExcutor(promise2, x, resolve, reject) {
+      // 返回的x值 会有3种情况
+      // 1. x 与当前promise相等时，返回一个错误
+      // 2. x为一个promise 根据不同的状态做不同的返回
+      // 3. x为一个 具有then方法的对象时 ，会将x当做promise来执行
+      // 4. x为一个普通的值时，直接返回
       if (x === promise2) {
         throw new Error("循环调用promise")
       }
@@ -308,31 +356,40 @@
     // }, 1000);
 
     // finally
-    const promise = new MyPromise((resolve, reject) => {
-      reject("step11");
-    })
-    promise.then(
-        data => {
-          console.log("resolve 值：", data);
-          return 'resolve'
-        },
-        rej => {
-          console.log("reject 值：", rej);
-          return "reject"
-        }
-      )
-      .finally(() => {
-        console.log(2222222222)
-        return 1111111
-      })
-      .then((data) => {
-        console.log("data", data)
-        return 3333333333
-        // throw new Error("finnally")
-      }).then(val => {
-        console.log("val", val)
+    // const promise = new MyPromise((resolve, reject) => {
+    //   reject("step11");
+    // })
+    // promise.then(
+    //     data => {
+    //       console.log("resolve 值：", data);
+    //       return 'resolve'
+    //     },
+    //     rej => {
+    //       console.log("reject 值：", rej);
+    //       return "reject"
+    //     }
+    //   )
+    //   .finally(() => {
+    //     console.log(2222222222)
+    //     return 1111111
+    //   })
+    //   .then((data) => {
+    //     console.log("data", data)
+    //     return 3333333333
+    //     // throw new Error("finnally")
+    //   }).then(val => {
+    //     console.log("val", val)
 
-      })
+    //   })
+
+    let promise = Promise.resolve(new Error(11111111))
+    promise.then(val => {
+      console.log("val", val)
+
+    }, err => {
+      console.log("err", err)
+
+    })
   </script>
 </body>
 
