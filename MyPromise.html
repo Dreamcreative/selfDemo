@@ -12,44 +12,13 @@
     const PENDING = 'PENDING'
     const FULFILLED = 'FULFILLED'
     const REJECTED = 'REJECTED'
-    const promiseResolveExcute = (promise2, x, resolve, reject) => {
-      if (x === promise2) {
-        throw new Error("promise 循环引用")
-      }
-      if (x instanceof MyPromise) {
-        if (x.state === PENDING) {
-          // ??????????????
-          x.then(y => {
-            promiseResolveExcute(promise2, y, resolve, reject)
-          }, reject)
-        }
-        x.state === FULFILLED && resolve(x)
-        x.state === REJECTED && reject(x)
-      }
-      if ((typeof x === 'function' || typeof x === "object") && typeof x != null && x.then) {
-        if (typeof x.then === 'function') {
-          x.then(y => {
-            resolve(y)
-          }, err => {
-            reject(err)
-          })
-        } else {
-          resolve(x)
-        }
-      } else {
-        resolve(x)
-      }
-    }
-    class MyPromise {
 
+    class MyPromise {
       finally(callback) {
-        let p = this.constructor
-        return this.then(
-          value => p.resolve(callback()).then(() => value),
-          err => p.resolve(callback()).then(() => {
-            throw err
-          })
-        )
+        console.log('this++++', this)
+        console.log(1111111111, this.constructor)
+        const p = this.constructor
+        this.then(value => p.then(callback()).then(() => value), err => p.then(callback()).then(() => err))
       }
       static race(promises) {
         return new MyPromise((resolve, reject) => {
@@ -324,19 +293,19 @@
     //   );
 
     // step12
-    const promise = new MyPromise((resolve, reject) => {
-      resolve("step12");
-    });
+    // const promise = new MyPromise((resolve, reject) => {
+    //   resolve("step12");
+    // });
 
-    setTimeout(() => {
-      promise.then(data => {
-        console.log("step12:", data);
-      });
+    // setTimeout(() => {
+    //   promise.then(data => {
+    //     console.log("step12:", data);
+    //   });
 
-      promise.then(data => {
-        console.log("step12:", data);
-      });
-    }, 1000);
+    //   promise.then(data => {
+    //     console.log("step12:", data);
+    //   });
+    // }, 1000);
 
     // finally
     const promise = new MyPromise((resolve, reject) => {
