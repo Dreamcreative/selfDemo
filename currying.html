@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>add(1)(2)(3)</title>
+</head>
+
+<body>
+  <script>
+    /**
+  函数柯里化 ： 就是将一个接收多个参数的函数转换成一个接收单一参数的函数
+  并且返回一个新函数， 最典型的就是 bind函数
+  */
+    function add(...args) {
+      return args.reduce((a, b) => a + b, 0)
+    }
+
+    // 就是先将 传入的参数通过一个变量存储起来，最后当不在传入参数时，将存储所有参数的变量传入到执行函数中
+    function curry(fn) {
+      let result = []
+      return function temp(...args) {
+        if (args.length) {
+          result = [...result, ...args]
+          return temp
+        } else {
+          let val = fn.apply(this, result)
+          return val
+        }
+      }
+    }
+    let result = curry(add)
+    console.log("result", result)
+    console.log(result(5)(1, 2, 3)())
+  </script>
+</body>
+
+</html>
