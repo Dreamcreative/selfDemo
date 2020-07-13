@@ -38,26 +38,18 @@
     container.onmousemove = debounce(getUserAction, 1000)
     // container.onmousemove = getUserAction;
     function debounce(func, wait, immediate = false) {
-
-        // var timeout;
-        // return function () {
-        //     var _this = this;
-        //     var args = arguments;
-        //     if (timeout) clearTimeout(timeout);
-        //     if (immediate) {
-        //         //    如果是立即执行
-        //         var callnow = !timeout;
-        //         timeout = setTimeout(function () {
-        //             timeout = null;
-        //         }, wait)
-        //         //    如果timeout 不存在  就是 第一次进入执行
-        //         if (callnow) func.apply(_this, args);
-        //     } else {
-        //         timeout = setTimeout(function () {
-        //             func.apply(_this, args)
-        //         }, wait)
-        //     }
-        // }
+        // 在n秒内无论调用多少次，只执行最后一次
+        let timer = null
+        return function () {
+            const _this = this
+            const args = arguments
+            if (timer) {
+                clearTimeout(timer)
+            }
+            timer = setTimeout(() => {
+                func.apply(_this, args)
+            }, wait);
+        }
     }
 </script>
 

@@ -11,8 +11,14 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1">
     <title>debounce</title>
     <style>
-        #container{
-            width: 100%; height: 200px; line-height: 200px; text-align: center; color: #fff; background-color: #444; font-size: 30px;
+        #container {
+            width: 100%;
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+            color: #fff;
+            background-color: #444;
+            font-size: 30px;
         }
     </style>
 </head>
@@ -21,12 +27,13 @@
     <div id="container"></div>
 </body>
 <script>
-    var count =1 ;
+    var count = 1;
     var container = document.getElementById("container");
-    function getUserAction(){
-        container.innerHTML = count++ ;
+
+    function getUserAction() {
+        container.innerHTML = count++;
     }
-    container.onmousemove = throttle(getUserAction , 1000 ,true )
+    container.onmousemove = throttle(getUserAction, 1000, true)
     // container.onmousemove = getUserAction;
     // function throttle( fn , wait ){
     //     //立即执行 停止后无法再次执行
@@ -61,45 +68,22 @@
     //     }
     // }
 
-    function throttle( fn ,wait  ){
-        var timer = null ;
-        var previou = 0 ;
-        var _this ;
-        var args ;
-        var later = function(){
-            previou = +new Date();
-            timer = null;
-            fn.apply(_this , args );
-        }
-        return function(){
-            args = arguments;
-            _this = this ;
-            var now = +new Date() ;
-            //下次触发 fn的剩余时间
-            var remaining = wait - (now-previou);
-            if( remaining<=0 || remaining > wait ){
-                //如果没有剩余时间 或者修改了系统时间
-                if( timer ){
-                    clearTimeout( timer );
-                    timer = null;
-                }
-                fn.apply( _this , args);
-                previou = now ;
-            }else if( !timer ){
-                timer = setTimeout( later , remaining )
+    function throttle(fn, wait) {
+        // 节流 在n秒内无论触发多少次，只会执行一次
+        let timer = null
+        return function () {
+            const _this = this
+            const args = arguments
+            if (!timer) {
+                timer = setTimeout(() => {
+                    timer = null
+                    fn.apply(_this, args)
+                }, wait);
             }
-            // if( !timer ){
-            //     timer = setTimeout( function(){
-            //         fn.apply(_this ,args );
-            //         timer= null;
-            //         previou = now ;
-            //     },wait)
-            // }else if( now-previou >wait  ){
-            //     fn.apply(_this ,args );
-            //     previou = now;
-            // }
+
         }
 
     }
 </script>
+
 </html>
