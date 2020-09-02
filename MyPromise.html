@@ -20,17 +20,13 @@
           并且会将之前 resolve 或者reject的值穿透到之后的then中
        */
       finally(callback) {
-        // this 当前调用 finally的方法，这里会是一个实例之后的promise
-        console.log('this++++', this)
-        // this.constructor 是一个promise的构造函数
-        console.log(1111111111, this.constructor)
-        // 获得一个MyPromise的构造函数
-        const p = this.constructor
-        // finally只是执行以下当前的回调，如果在之前还有返回值，会穿透到后面的then或者是catch
-        this.then(
-          value => p.then(callback()).then(() => value),
-          err => p.then(callback()).then(() => err)
-        )
+        let P = this.constructor;
+        return this.then(
+          value => P.resolve(callback()).then(() => value),
+          reason => P.resolve(callback()).then(() => {
+            throw reason
+          })
+        );
       }
       /**
         race 执行传入的 promise数组，只要其中有一个promise resolve或者reject，就会直接返回
@@ -357,7 +353,7 @@
 
     // finally
     // const promise = new MyPromise((resolve, reject) => {
-    //   reject("step11");
+    //   resolve("step11");
     // })
     // promise.then(
     //     data => {
@@ -382,14 +378,37 @@
 
     //   })
 
-    let promise = Promise.resolve(new Error(11111111))
-    promise.then(val => {
-      console.log("val", val)
+    // let promise = Promise.resolve(new Error(11111111))
+    // promise.then(val => {
+    //   console.log("val", val)
 
-    }, err => {
-      console.log("err", err)
+    // }, err => {
+    //   console.log("err", err)
 
+    // })
+
+    const promise = new MyPromise((resolve, reject) => {
+      reject("step11");
     })
+    promise.then(
+        data => {
+          console.log("resolve 值：", data);
+          return 'resolve'
+        },
+        rej => {
+          console.log("reject 值：", rej);
+          return 11111
+        }
+      )
+
+      .then((data) => {
+        console.log("data", data)
+        return 3333333333
+        // throw new Error("finnally")
+      }).then(val => {
+        console.log("val", val)
+
+      })
   </script>
 </body>
 
