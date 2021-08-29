@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InteractionObserver交叉区域监听</title>
+  <title>IntersectionObserver交叉区域监听</title>
   <style>
     .box {
       background-color: yellowgreen;
@@ -16,7 +16,7 @@
 
     }
 
-    .interactionObserver {
+    .IntersectionObserver {
       display: inline-block;
       width: 20px;
       height: 20px;
@@ -29,9 +29,9 @@
 
 <body>
   <div id='box' class="box">
-    <div class='interactionObserver'></div>
+    <div class='IntersectionObserver'></div>
   </div>
-  <!-- InteractionObserver兼容 -->
+  <!-- IntersectionObserver兼容 -->
   <script src="js/intersection-observer.js"></script>
   <script>
     const observe = new IntersectionObserver((entrys) => {
@@ -49,8 +49,7 @@
         root: document.getElementById('box'),
       }
     )
-    const observeDom = document.getElementsByClassName('interactionObserver')[0];
-    console.log("🚀 ~ file: interactionObserver.html ~ line 51 ~ observeDom", observeDom)
+    const observeDom = document.getElementsByClassName('IntersectionObserver')[0];
     observe.observe(observeDom)
   </script>
 </body>
