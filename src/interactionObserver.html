@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InteractionObserver交叉区域监听</title>
+  <style>
+    .box {
+      background-color: yellowgreen;
+      height: 300px;
+      width: 100%;
+      overflow-y: scroll;
+      text-align: center;
+
+    }
+
+    .interactionObserver {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      margin-top: 700px;
+      margin-bottom: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='box' class="box">
+    <div class='interactionObserver'></div>
+  </div>
+  <!-- InteractionObserver兼容 -->
+  <script src="js/intersection-observer.js"></script>
+  <script>
+    const observe = new IntersectionObserver((entrys) => {
+      console.log(11111)
+      entrys.forEach(observe => {
+        if (observe.isIntersecting) {
+          observe.target.parentNode.style.backgroundColor = 'green';
+        } else {
+          observe.target.parentNode.style.backgroundColor = 'yellowgreen';
+
+        }
+      })
+    },
+      {
+        root: document.getElementById('box'),
+      }
+    )
+    const observeDom = document.getElementsByClassName('interactionObserver')[0];
+    console.log("🚀 ~ file: interactionObserver.html ~ line 51 ~ observeDom", observeDom)
+    observe.observe(observeDom)
+  </script>
+</body>
+
+</html>
