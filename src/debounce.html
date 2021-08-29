@@ -26,30 +26,6 @@
   <div id="container"></div>
 </body>
 <script>
-<<<<<<< HEAD
-    var count = 1;
-    var container = document.getElementById("container");
-
-    function getUserAction(a, b, c) {
-        console.log(a, b, c)
-        container.innerHTML = count++;
-    }
-    container.onmousemove = debounce(getUserAction, 1000)
-    // container.onmousemove = getUserAction;
-    function debounce(func, wait, immediate = false) {
-        // 在n秒内无论调用多少次，只执行最后一次
-        let timer = null
-        return function () {
-            const _this = this
-            const args = arguments
-            if (timer) {
-                clearTimeout(timer)
-            }
-            timer = setTimeout(() => {
-                func.apply(_this, args)
-            }, wait);
-        }
-=======
   var count = 1;
   var container = document.getElementById("container");
 
@@ -67,7 +43,6 @@
       timer = setTimeout(() => {
         func.apply(_this, args)
       }, wait)
->>>>>>> 98bd42e66be27c92023b3df88beff2957124d057
     }
   }
 </script>
